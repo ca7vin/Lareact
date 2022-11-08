@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 class CreateBook extends React.Component {
   constructor(props) {
@@ -12,9 +13,10 @@ class CreateBook extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
+  
 
   handleChange(event) {
-    this.setState({[event.target.name]: event.target.value});
+    this.setState({ [event.target.name]: event.target.value });
   }
 
   handleSubmit(event) {
@@ -27,41 +29,71 @@ class CreateBook extends React.Component {
       body: JSON.stringify({
         title: title,
         author: author,
-        publisher: publisher
-      })
-    }
-    )
-    .then(res => res.json())
-    .then(
-        (result) =>{
-            this.setState({
-                isLoaded: true,
-            });
-            console.log(result);
+        publisher: publisher,
+      }),
+    })
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          this.setState({
+            isLoaded: true,
+          });
+          console.log(result);
+          this.props.addBook(result.book)
+        },
+        (error) => {
+          this.setState({
+            isLoaded: true,
+            error,
+          });
         }
-    )
-    event.preventDefault()
+      );
+    event.preventDefault();
+    this.props.navigate("/");
   }
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
-        <label>
+      <form className="form d-flex flex-column w-75 mx-auto" onSubmit={this.handleSubmit}>
+        <label className="form-label">
           Title:
-          <input type="text" name="title" value={this.state.title} onInput={this.handleChange} />
+          <input
+            className="form-control"
+            type="text"
+            name="title"
+            value={this.state.title}
+            onInput={this.handleChange}
+          />
         </label>
-        <label>
+        <label className="form-label">
           Author:
-          <input type="text" name="author" value={this.state.author} onInput={this.handleChange} />
+          <input
+            className="form-control"
+            type="text"
+            name="author"
+            value={this.state.author}
+            onInput={this.handleChange}
+          />
         </label>
-        <label>
+        <label className="form-label">
           Publisher:
-          <input type="text" name="publisher" value={this.state.publisher} onInput={this.handleChange} />
+          <input
+            className="form-control"
+            type="text"
+            name="publisher"
+            value={this.state.publisher}
+            onInput={this.handleChange}
+          />
         </label>
-        <input type="submit" value="Submit" />
+        <input className="btn btn-primary w-50 mx-auto" type="submit" value="Submit" />
       </form>
     );
   }
 }
 
-export default CreateBook;
+function WithNavigate(props) {
+  let navigate = useNavigate();
+  return <CreateBook {...props} navigate={navigate} />;
+}
+
+export default WithNavigate;

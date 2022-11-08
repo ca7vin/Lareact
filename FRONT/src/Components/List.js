@@ -1,25 +1,20 @@
-import React from 'react'
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import React from "react";
+import { useState, useEffect, useCallback } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
 
-export default function List() {
+export default function List({books}) {
 
-  const [books, setBooks] = useState([]);
-
-  useEffect(() => {
-    axios.get("http://127.0.0.1:8000/api/books").then((response) => {
-      setBooks(response.data);
-    });
-  }, []);
 
   return (
-    <table className="table">
+    <table className="table mx-auto w-75">
       <thead>
         <tr>
           <th>ID</th>
           <th>Title</th>
           <th>Author</th>
           <th>Publisher</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -30,10 +25,21 @@ export default function List() {
               <td>{book.title}</td>
               <td>{book.author}</td>
               <td>{book.publisher}</td>
+              <td>
+                <button className="btn btn-warning me-3">
+                  <Link className="text-decoration-none text-white" to={{ pathname: "book/edit/" + book.id }}>Edit</Link>
+                </button>
+                <button
+                  onClick={() => this.delBook(book.id)}
+                  className="btn btn-danger"
+                >
+                  Delete
+                </button>
+              </td>
             </tr>
           );
         })}
       </tbody>
     </table>
-  )
+  );
 }
